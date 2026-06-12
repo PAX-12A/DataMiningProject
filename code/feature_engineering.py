@@ -13,19 +13,19 @@ departments = pd.read_csv("data/departments.csv")#department_id,department
 prior = pd.read_csv("data/order_products__prior.csv")
 train = pd.read_csv("data/order_products__train.csv") # order_id,product_id,add_to_cart_order,reordered
 
-# sample_users = (
-#     orders["user_id"]
-#     .drop_duplicates()
-#     .sample(
-#         n=100,
-#         random_state=42
-#     )
-# )
-
 sample_users = (
     orders["user_id"]
     .drop_duplicates()
+    .sample(
+        n=50000,
+        random_state=42
+    )
 )
+
+# sample_users = (
+#     orders["user_id"]
+#     .drop_duplicates()
+# )
 
 orders = orders[orders["user_id"].isin(sample_users)]
 
@@ -68,7 +68,7 @@ user_features = pd.DataFrame()
 
 user_features["user_total_orders"] = (prior_only_orders.groupby("user_id")["order_number"].max()) # 只包含"prior"订单不含train
 
-user_features["user_avg_days_between_orders"] = (orders.groupby("user_id")["days_since_prior_order"].mean())
+user_features["user_avg_days_between_orders"] = (prior_only_orders.groupby("user_id")["days_since_prior_order"].mean())
 
 user_features["user_total_products"] = (prior_orders.groupby("user_id")["product_id"].count())
 
@@ -197,34 +197,167 @@ print("Department Features Created")
 
 
 # ==================================
-# 生成训练标签 
+# 6. 构造训练标签（Label）
 # ==================================
 
-# 确保 train 数据也只包含我们采样到的 order_id
-train = train[train["order_id"].isin(sample_order_ids)]
+# 研究目标：
+# 利用用户历史订单（prior）中的行为，
+# 预测用户在下一次订单（train）中
+# 是否会再次购买某个商品。
+#
+# Label定义：
+# label = 1 ：该商品出现在用户的train订单中
+# label = 0 ：该商品仅出现在历史订单中，未出现在train订单中
+#
+# 注意：
+# 不使用 train 表中的 reordered 字段作为标签。
+# reordered 表示：
+#   “该商品在当前订单中是否曾经购买过”
+#
+# 而本项目需要预测的是：
+#   “用户下一单是否会购买该商品”
+#
+# 两者含义不同。
 
-train_orders = orders[orders["eval_set"] == "train"]
 
-# 现在进行合并，因为 train 已经被过滤，所以不会出现不匹配的 order_id
-labels = train.merge(
-    train_orders[["order_id", "user_id"]],
-    on="order_id",
-    how="left"
+# ----------------------------------
+# Step 1
+# 仅保留当前采样用户对应的train订单
+# ----------------------------------
+
+train = train[
+    train["order_id"].isin(sample_order_ids)
+]
+
+
+# ----------------------------------
+# Step 2
+# 获取所有train订单信息
+# ----------------------------------
+
+train_orders = orders[
+    orders["eval_set"] == "train"
+]
+
+
+# ----------------------------------
+# Step 3
+# 构造候选样本集合
+# ----------------------------------
+#
+# 候选样本 = 用户历史买过的所有商品
+#
+# 例如：
+#
+# 用户A历史买过：
+# 香蕉、牛奶、鸡蛋
+#
+# 则产生：
+#
+# (A, 香蕉)
+# (A, 牛奶)
+# (A, 鸡蛋)
+#
+# 后续再判断这些商品是否出现在train订单中
+#
+
+prior_pairs = (
+    prior_orders[
+        ["user_id", "product_id"]
+    ]
+    .drop_duplicates()
 )
 
-# 建议在此处检查一下是否有缺失的 user_id
-if labels["user_id"].isnull().any():
-    print("警告：存在缺失的 user_id，请检查过滤逻辑")
-    labels = labels.dropna(subset=["user_id"]) # 移除无法匹配的行
 
-labels = labels[["user_id", "product_id", "reordered"]]
+# ----------------------------------
+# Step 4
+# 获取train订单中的真实购买商品
+# ----------------------------------
+#
+# train表只有：
+# order_id
+# product_id
+#
+# 需要通过orders表补充user_id
+#
+
+train_pairs = (
+    train
+    .merge(
+        train_orders[
+            ["order_id", "user_id"]
+        ],
+        on="order_id",
+        how="inner"
+    )
+    [
+        ["user_id", "product_id"]
+    ]
+)
+
+
+# ----------------------------------
+# Step 5
+# 初始化标签
+# ----------------------------------
+#
+# 默认认为：
+# 历史商品不会被再次购买
+#
+
+prior_pairs["label"] = 0
+
+
+# ----------------------------------
+# Step 6
+# 标记正样本
+# ----------------------------------
+#
+# 如果：
+#
+# (user_id, product_id)
+#
+# 同时出现在train订单中，
+# 则说明用户下一单再次购买了该商品。
+#
+# 标记：
+#
+# label = 1
+#
+
+prior_pairs.loc[
+    prior_pairs
+    .set_index(
+        ["user_id", "product_id"]
+    )
+    .index
+    .isin(
+        train_pairs
+        .set_index(
+            ["user_id", "product_id"]
+        )
+        .index
+    ),
+    "label"
+] = 1
+
+
+# ----------------------------------
+# 查看标签分布
+# ----------------------------------
+
+print(
+    prior_pairs["label"]
+    .value_counts()
+)
+
 print("Labels Created")
 
 # ==================================
 # 7. 合并特征
 # ==================================
 
-feature_table = labels.merge(
+feature_table = prior_pairs.merge(
     user_features,
     on="user_id",
     how="left"
@@ -325,6 +458,8 @@ for col in mean_cols:
 # ==================================
 # 8. 保存结果
 # ==================================
+
+# print(feature_table["reordered"].value_counts())
 
 feature_table.to_csv(
     "output/feature_table.csv",

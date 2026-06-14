@@ -4,7 +4,7 @@
 关键设计：按 user_id 划分（60/20/20），确保同一用户的所有样本
 只出现在一个集合中，防止数据泄露。
 
-首次运行：从 feature_table.csv 读取 → 用户级划分 → 保存到 data/splits/
+首次运行：从 feature_table.csv 读取 -> 用户级划分 -> 保存到 data/splits/
 后续运行：直接从 data/splits/ 加载（5 个模型共用同一份划分）
 """
 import os
@@ -84,7 +84,7 @@ def load_and_split():
     assert train_users & val_users == set(), "Train 和 Val 的 user_id 有交集!"
     assert train_users & test_users == set(), "Train 和 Test 的 user_id 有交集!"
     assert val_users & test_users == set(), "Val 和 Test 的 user_id 有交集!"
-    print("   ✓ Train/Val/Test 的 user_id 互不相交")
+    print("   OK Train/Val/Test 的 user_id 互不相交")
 
     # 筛选
     train_data = df[df["user_id"].isin(train_users)].copy()
@@ -100,14 +100,14 @@ def load_and_split():
     os.makedirs(SPLIT_DIR, exist_ok=True)
 
     train_data.to_csv(SPLIT_TRAIN_PATH, index=False)
-    print(f"   → {SPLIT_TRAIN_PATH}")
+    print(f"   -> {SPLIT_TRAIN_PATH}")
 
     val_data.to_csv(SPLIT_VAL_PATH, index=False)
-    print(f"   → {SPLIT_VAL_PATH}")
+    print(f"   -> {SPLIT_VAL_PATH}")
 
     test_data.to_csv(SPLIT_TEST_PATH, index=False)
-    print(f"   → {SPLIT_TEST_PATH}")
-    print("   ✓ 划分已保存，后续模型将直接加载")
+    print(f"   -> {SPLIT_TEST_PATH}")
+    print("   OK 划分已保存，后续模型将直接加载")
 
     # 释放原始 df
     del df

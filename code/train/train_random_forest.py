@@ -1,12 +1,12 @@
 """
-训练脚本 — Random Forest (Bagging 集成)
+训练脚本 - Random Forest (Bagging 集成)
 
 预处理: 无
 
 超参数微调: 在 Val 上对比 (n_estimators, max_depth) 组合
 最终模型:  最佳参数, Train+Val 全量重训, Test 评估
 
-注意: 100 棵树 × 80 万行 内存较大，joblib compress=3 压缩保存。
+注意: 100 棵树 x 80 万行 内存较大，joblib compress=3 压缩保存。
       max_depth=12 限制以控制模型体积。
 
 产出:
@@ -41,8 +41,8 @@ def main():
     X_val, y_val, _ = extract_xy(val_data)
     X_test, y_test, ids_test = extract_xy(test_data)
 
-    # 2. 超参数微调 — (n_estimators, max_depth) 组合
-    print("\n3. 超参数微调 (Val 上对比 n_estimators × max_depth)...")
+    # 2. 超参数微调 - (n_estimators, max_depth) 组合
+    print("\n3. 超参数微调 (Val 上对比 n_estimators x max_depth)...")
     best_params = None
     best_f1 = -1
 
@@ -56,7 +56,7 @@ def main():
         f1 = f1_score(y_val, y_val_pred)
         print(
             f"   n_estimators={combo['n_estimators']:3d}, "
-            f"max_depth={combo['max_depth']:2d}  →  Val F1={f1:.4f}"
+            f"max_depth={combo['max_depth']:2d}  ->  Val F1={f1:.4f}"
         )
 
         if f1 > best_f1:
@@ -68,7 +68,7 @@ def main():
         f"max_depth={best_params['max_depth']} (Val F1 = {best_f1:.4f})"
     )
 
-    # 3. 最终模型 — Train+Val 重训
+    # 3. 最终模型 - Train+Val 重训
     print("\n4. 用最佳参数在 Train+Val 上训练最终模型...")
     X_trainval = pd.concat([X_train, X_val], ignore_index=True)
     y_trainval = pd.concat([y_train, y_val], ignore_index=True)
@@ -92,7 +92,7 @@ def main():
     save_model(final_model, "random_forest")
     save_predictions(ids_test, y_test, y_test_pred, y_test_proba, "random_forest")
 
-    print("\n✓ Random Forest 训练完成!")
+    print("\nOK Random Forest 训练完成!")
     print("=" * 60 + "\n")
 
 

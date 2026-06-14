@@ -1,5 +1,5 @@
 """
-统一评估函数 — 计算所有指标，打印格式化表格，追加到汇总 CSV。
+统一评估函数 - 计算所有指标，打印格式化表格，追加到汇总 CSV。
 """
 import os
 import pandas as pd
@@ -52,14 +52,14 @@ def evaluate_model(y_true, y_pred, y_proba, model_name):
 def _print_metrics(metrics):
     """格式化打印指标表。"""
     print(f"\n{'=' * 50}")
-    print(f"  {metrics['model']} — 测试集指标")
+    print(f"  {metrics['model']} - 测试集指标")
     print(f"{'=' * 50}")
     print(f"  Accuracy:   {metrics['accuracy']:.4f}")
     print(f"  Precision:  {metrics['precision']:.4f}")
-    print(f"  Recall:     {metrics['recall']:.4f}    ★ 主要")
-    print(f"  F1-score:   {metrics['f1']:.4f}        ★ 主要")
-    print(f"  ROC-AUC:    {metrics['roc_auc']:.4f}   ★ 主要")
-    print(f"  PR-AUC:     {metrics['pr_auc']:.4f}    ★ 主要")
+    print(f"  Recall:     {metrics['recall']:.4f}    * 主要")
+    print(f"  F1-score:   {metrics['f1']:.4f}        * 主要")
+    print(f"  ROC-AUC:    {metrics['roc_auc']:.4f}   * 主要")
+    print(f"  PR-AUC:     {metrics['pr_auc']:.4f}    * 主要")
     print(f"  LogLoss:    {metrics['log_loss']:.4f}")
     print(f"{'=' * 50}\n")
 

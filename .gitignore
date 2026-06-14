@@ -6,11 +6,15 @@ __pycache__/
 CLAUDE.md
 
 ## 原始数据（过大，不入库）
+data/*.csv
 data/feature_table/
 
 ## 数据划分（过大，不入库）
 data/splits/
 
 ## 训练产出
+output/feature_table.csv
+output/models/
+output/preprocessor/
 ### 预测结果过大（可重新生成），不入库
 output/predictions/

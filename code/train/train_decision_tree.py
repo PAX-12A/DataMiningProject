@@ -1,5 +1,5 @@
 """
-训练脚本 — Decision Tree (单棵树基线)
+训练脚本 - Decision Tree (单棵树基线)
 
 预处理: 无（原始特征直接训练）
 
@@ -38,7 +38,7 @@ def main():
     X_val, y_val, _ = extract_xy(val_data)
     X_test, y_test, ids_test = extract_xy(test_data)
 
-    # 2. 超参数微调 — max_depth
+    # 2. 超参数微调 - max_depth
     print("\n3. 超参数微调 (Val 上对比 max_depth)...")
     best_depth = None
     best_f1 = -1
@@ -52,7 +52,7 @@ def main():
         y_val_pred = dt.predict(X_val)
         f1 = f1_score(y_val, y_val_pred)
         depth_label = "None" if depth is None else str(depth)
-        print(f"   max_depth={depth_label:4s}  →  Val F1={f1:.4f}")
+        print(f"   max_depth={depth_label:4s}  ->  Val F1={f1:.4f}")
 
         if f1 > best_f1:
             best_f1 = f1
@@ -61,7 +61,7 @@ def main():
     depth_label = "None" if best_depth is None else str(best_depth)
     print(f"\n   最佳 max_depth = {depth_label} (Val F1 = {best_f1:.4f})")
 
-    # 3. 最终模型 — Train+Val 重训
+    # 3. 最终模型 - Train+Val 重训
     print("\n4. 用最佳参数在 Train+Val 上训练最终模型...")
     X_trainval = pd.concat([X_train, X_val], ignore_index=True)
     y_trainval = pd.concat([y_train, y_val], ignore_index=True)
@@ -83,7 +83,7 @@ def main():
     save_model(final_model, "decision_tree")
     save_predictions(ids_test, y_test, y_test_pred, y_test_proba, "decision_tree")
 
-    print("\n✓ Decision Tree 训练完成!")
+    print("\nOK Decision Tree 训练完成!")
     print("=" * 60 + "\n")
 
 

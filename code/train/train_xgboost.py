@@ -1,5 +1,5 @@
 """
-训练脚本 — XGBoost (Boosting 集成)
+训练脚本 - XGBoost (Boosting 集成)
 
 预处理: 无, department_id 通过 enable_categorical=True 处理
 
@@ -42,8 +42,8 @@ def main():
     X_val, y_val, _ = extract_xy(val_data)
     X_test, y_test, ids_test = extract_xy(test_data)
 
-    # 2. 超参数微调 — (max_depth, learning_rate) 组合, early_stopping
-    print("\n3. 超参数微调 (Val 上对比 max_depth × learning_rate)...")
+    # 2. 超参数微调 - (max_depth, learning_rate) 组合, early_stopping
+    print("\n3. 超参数微调 (Val 上对比 max_depth x learning_rate)...")
     best_params = None
     best_f1 = -1
     best_boost_rounds = None
@@ -72,7 +72,7 @@ def main():
         n_trees = model.best_iteration
         print(
             f"   max_depth={combo['max_depth']}, "
-            f"lr={combo['learning_rate']:.2f}  →  "
+            f"lr={combo['learning_rate']:.2f}  ->  "
             f"Val F1={f1:.4f}  (best_iter={n_trees})"
         )
 
@@ -87,7 +87,7 @@ def main():
         f"(Val F1 = {best_f1:.4f}, best_iter = {best_boost_rounds})"
     )
 
-    # 3. 最终模型 — Train+Val 重训（用最佳迭代数，无早停，避免 Test 泄露）
+    # 3. 最终模型 - Train+Val 重训（用最佳迭代数，无早停，避免 Test 泄露）
     print("\n4. 用最佳参数在 Train+Val 上训练最终模型...")
     X_trainval = pd.concat([X_train, X_val], ignore_index=True)
     y_trainval = pd.concat([y_train, y_val], ignore_index=True)
@@ -121,7 +121,7 @@ def main():
     save_model(final_model, "xgboost")
     save_predictions(ids_test, y_test, y_test_pred, y_test_proba, "xgboost")
 
-    print("\n✓ XGBoost 训练完成!")
+    print("\nOK XGBoost 训练完成!")
     print("=" * 60 + "\n")
 
 

@@ -1,0 +1,11 @@
+model_a,model_b,a_correct_b_wrong,a_wrong_b_correct,discordant_pairs,mcnemar_chi2_cc,p_value,significant_at_0.05,better_by_accuracy
+Decision Tree,LightGBM,9444,69521,78965,45705.38562654341,0.0,True,LightGBM
+Decision Tree,XGBoost,17038,34518,51556,5925.894968577857,0.0,True,XGBoost
+LightGBM,Random Forest,69282,7860,77142,48903.82983329445,0.0,True,LightGBM
+LightGBM,Logistic Regression,76261,13162,89423,44522.74698902967,0.0,True,LightGBM
+LightGBM,XGBoost,58457,15860,74317,24414.591762315486,0.0,True,LightGBM
+Logistic Regression,XGBoost,19365,39867,59232,7095.674652215019,0.0,True,XGBoost
+Random Forest,XGBoost,12189,31014,43203,8201.814133277781,0.0,True,XGBoost
+Decision Tree,Logistic Regression,31950,28928,60878,149.91361411347285,1.755778245550092e-34,True,Decision Tree
+Logistic Regression,Random Forest,23181,24858,48039,58.472824163700324,2.0489999232087438e-14,True,Random Forest
+Decision Tree,Random Forest,19786,18441,38227,47.25288408716352,6.209137206360148e-12,True,Decision Tree

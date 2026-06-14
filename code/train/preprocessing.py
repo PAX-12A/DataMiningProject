@@ -1,5 +1,5 @@
 """
-预处理模块 — Logistic Regression 专用。
+预处理模块 - Logistic Regression 专用。
 
 树模型（DT / RF / XGBoost / LightGBM）不需要标准化和 One-Hot，
 直接使用原始特征即可。LightGBM/XGBoost 可通过 categorical_feature

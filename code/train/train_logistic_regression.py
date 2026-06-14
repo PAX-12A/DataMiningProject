@@ -1,5 +1,5 @@
 """
-训练脚本 — Logistic Regression (线性基线模型)
+训练脚本 - Logistic Regression (线性基线模型)
 
 预处理:
   - StandardScaler (17 个数值特征)
@@ -52,7 +52,7 @@ def main():
     X_val_pp = preprocessor.transform(X_val)
     X_test_pp = preprocessor.transform(X_test)
 
-    # 3. 超参数微调 — 在 Val 上对比 C 值
+    # 3. 超参数微调 - 在 Val 上对比 C 值
     print("\n4. 超参数微调 (Val 上对比 C)...")
     best_c = None
     best_f1 = -1
@@ -70,7 +70,7 @@ def main():
         from sklearn.metrics import f1_score
 
         f1 = f1_score(y_val, y_val_pred)
-        print(f"   C={c:.1f}  →  Val F1={f1:.4f}")
+        print(f"   C={c:.1f}  ->  Val F1={f1:.4f}")
 
         if f1 > best_f1:
             best_f1 = f1
@@ -79,7 +79,7 @@ def main():
 
     print(f"\n   最佳 C = {best_c} (Val F1 = {best_f1:.4f})")
 
-    # 4. 最终模型 — 用最佳 C 在 Train+Val 上重训
+    # 4. 最终模型 - 用最佳 C 在 Train+Val 上重训
     print("\n5. 用最佳参数在 Train+Val 上训练最终模型...")
     X_trainval_pp = pd.concat([X_train_pp, X_val_pp], ignore_index=True)
     y_trainval = pd.concat([y_train, y_val], ignore_index=True)
@@ -101,7 +101,7 @@ def main():
     save_model(final_model, "logistic_regression")
     save_predictions(ids_test, y_test, y_test_pred, y_test_proba, "logistic_regression")
 
-    print("\n✓ Logistic Regression 训练完成!")
+    print("\nOK Logistic Regression 训练完成!")
     print("=" * 60 + "\n")
 
 

@@ -1,5 +1,5 @@
 """
-全局配置 — 路径、随机种子、模型超参数默认值。
+全局配置 - 路径、随机种子、模型超参数默认值。
 所有训练脚本统一引用此模块，保证一致性。
 """
 import os
@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.abspath(
 )
 
 # 数据路径
-DATA_PATH = os.path.join(PROJECT_ROOT, "data", "feature_table", "feature_table.csv")
+DATA_PATH = os.path.join(PROJECT_ROOT, "output", "feature_table.csv")
 
 # 划分后数据集存放目录
 SPLIT_DIR = os.path.join(PROJECT_ROOT, "data", "splits")
@@ -52,12 +52,11 @@ CATEGORICAL_COLS = ["department_id"]
 # Logistic Regression
 LR_PARAMS = {
     "solver": "saga",
-    "penalty": "l2",
+    "l1_ratio": 0,
     "C": 1.0,
     "max_iter": 1000,
     "class_weight": "balanced",
     "random_state": RANDOM_SEED,
-    "n_jobs": -1,
 }
 
 # Logistic Regression 候选 C 值（用于手工微调）
